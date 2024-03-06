@@ -2,7 +2,7 @@
 # RoboMaster AI Challenge Simulator (RMAICS)
 
 from kernal import kernal
-
+import random   
 class rmaics(object):
 
     def __init__(self, agent_num, render=True):
@@ -27,14 +27,33 @@ class rmaics(object):
         return obs, rewards, state.done, None
     
     def get_observation(self, state):
-        # personalize your observation here
-        obs = state
-        return obs
+        observation = {
+            'time_remaining': state.time,
+            'agent_states': state.agents,
+            'competition_info': state.compet,
+            'is_done': state.done,
+            'visible_agents': state.detect,
+            'visible_enemies': state.vision
+        }
+        return observation
+
     
     def get_reward(self, state):
-        # personalize your reward here
-        rewards = None
-        return rewards
+        reward = 0  # Initialize reward
+
+        # Penalize collisions
+        for agent in state.agents:
+            if agent[12] > 0 or agent[13] > 0 or agent[14] > 0:
+                reward -= 1  # Penalty for collisions
+        
+        # Reward for reaching a bonus area
+        if state.compet[0][0] == 1 or state.compet[1][0] == 1:
+            reward += 10  
+
+        
+        reward -= 0.05 
+        
+        return reward
 
     def play(self):
         self.game.play()
