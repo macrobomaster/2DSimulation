@@ -82,7 +82,7 @@ for _ in range(training_duration // episode_duration):
         model.fit(state, target_full, epochs=1, verbose=0)
         if done:
             break
-        if total_reward < -1000:
+        if total_reward < -250 or total_reward > 800:
             break
         epsilon *= 0.995  # Decaying exploration rate
         epsilon = max(0.01, epsilon)  # Ensure epsilon doesn't go below 0.01
